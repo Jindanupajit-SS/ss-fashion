@@ -1,0 +1,118 @@
+openapi: 3.0.0
+info:
+  title: Fashion Store API
+  description: This is a Smoothstack Fashion Store API (In Progress)
+  contact:
+    email: krissada.jindanupajit@smoothstack.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/Jindanupajit-SS/FashionStore/1.0.0
+  description: SwaggerHub API Auto Mocking
+tags:
+- name: User
+  description: User API
+paths:
+  /user:
+    get:
+      tags:
+      - User
+      summary: searches User
+      description: |
+        By passing in the appropriate options, you can search for
+        available users in the system
+      operationId: searchInventory
+      parameters:
+      - name: userId
+        in: path
+        description: userId to search
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
+      responses:
+        "200":
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InventoryItem'
+                x-content-type: application/json
+        "400":
+          description: bad input parameter
+        "404":
+          description: not found
+      x-swagger-router-controller: User
+    post:
+      tags:
+      - User
+      summary: adds an user
+      description: Adds an user to the system
+      operationId: addUser
+      requestBody:
+        description: Inventory item to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InventoryItem'
+      responses:
+        "201":
+          description: item created
+        "400":
+          description: invalid input, object invalid
+        "409":
+          description: an existing item already exists
+      x-swagger-router-controller: User
+components:
+  schemas:
+    InventoryItem:
+      required:
+      - id
+      - manufacturer
+      - name
+      - releaseDate
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: Widget Adapter
+        releaseDate:
+          type: string
+          format: date-time
+        manufacturer:
+          $ref: '#/components/schemas/Manufacturer'
+      example:
+        releaseDate: 2000-01-23T04:56:07.000+00:00
+        name: Widget Adapter
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        manufacturer:
+          phone: 408-867-5309
+          name: ACME Corporation
+          homePage: https://www.acme-corp.com
+    Manufacturer:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+          example: ACME Corporation
+        homePage:
+          type: string
+          format: url
+          example: https://www.acme-corp.com
+        phone:
+          type: string
+          example: 408-867-5309
+      example:
+        phone: 408-867-5309
+        name: ACME Corporation
+        homePage: https://www.acme-corp.com
