@@ -12,107 +12,205 @@ servers:
 - url: https://virtserver.swaggerhub.com/Jindanupajit-SS/FashionStore/1.0.0
   description: SwaggerHub API Auto Mocking
 tags:
-- name: User
-  description: User API
+- name: Product
+  description: Product API
 paths:
-  /user:
+  /products:
     get:
       tags:
-      - User
-      summary: searches User
+      - Product
+      summary: searches product by id
       description: |
         By passing in the appropriate options, you can search for
-        available users in the system
-      operationId: searchInventory
+        available products in the system
+      operationId: searchProduct
       parameters:
-      - name: userId
+      - name: productId
         in: path
-        description: userId to search
+        description: productId to search
         required: true
         style: simple
         explode: false
         schema:
           type: number
+          format: int64
       responses:
         "200":
           description: search results matching criteria
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/InventoryItem'
-                x-content-type: application/json
+                $ref: '#/components/schemas/Product'
         "400":
           description: bad input parameter
         "404":
           description: not found
-      x-swagger-router-controller: User
+      x-swagger-router-controller: Product
+    put:
+      tags:
+      - Product
+      summary: adds a product
+      description: Update a product in the system
+      operationId: updateProduct
+      requestBody:
+        description: Inventory item to update
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        "202":
+          description: Accepted, item modified
+        "400":
+          description: invalid input, object invalid
+        "409":
+          description: ' Conflict, item not exists'
+      x-swagger-router-controller: Product
     post:
       tags:
-      - User
-      summary: adds an user
-      description: Adds an user to the system
-      operationId: addUser
+      - Product
+      summary: adds a product
+      description: Adds a product to the system
+      operationId: addProduct
       requestBody:
         description: Inventory item to add
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/InventoryItem'
+              $ref: '#/components/schemas/Product'
       responses:
         "201":
           description: item created
         "400":
           description: invalid input, object invalid
         "409":
-          description: an existing item already exists
-      x-swagger-router-controller: User
+          description: ' Conflict, an existing item already exists'
+      x-swagger-router-controller: Product
+    delete:
+      tags:
+      - Product
+      summary: delete a product
+      description: Delete a product in the system
+      operationId: deleteProduct
+      parameters:
+      - name: productId
+        in: path
+        description: productId to delete
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
+          format: int64
+      responses:
+        "204":
+          description: No content, item deleted
+        "400":
+          description: invalid input, object invalid
+        "409":
+          description: ' Conflict, item not exists'
+      x-swagger-router-controller: Product
 components:
   schemas:
-    InventoryItem:
+    Product:
       required:
-      - id
-      - manufacturer
-      - name
-      - releaseDate
+      - productId
+      - productName
+      - productPrice
       type: object
       properties:
-        id:
+        productId:
+          type: number
+          format: int64
+          example: 10001
+        productPrice:
+          type: number
+          format: double
+          example: 26.44
+        productName:
           type: string
-          format: uuid
-        name:
+          example: Smoohstack Handbag (Medium)
+        productDescription:
           type: string
-          example: Widget Adapter
-        releaseDate:
-          type: string
-          format: date-time
-        manufacturer:
-          $ref: '#/components/schemas/Manufacturer'
+          example: Medium Handbag with Smoothstack logo
+        productCategory:
+          $ref: '#/components/schemas/Category'
+        productAttributeSet:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attribute'
       example:
-        releaseDate: 2000-01-23T04:56:07.000+00:00
-        name: Widget Adapter
-        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
-        manufacturer:
-          phone: 408-867-5309
-          name: ACME Corporation
-          homePage: https://www.acme-corp.com
-    Manufacturer:
+        productId: 10001
+        productAttributeSet:
+        - attributeId: 18701
+          attributeValue: Red
+          attributeName: Color
+        - attributeId: 18701
+          attributeValue: Red
+          attributeName: Color
+        productPrice: 26.44
+        productName: Smoohstack Handbag (Medium)
+        productDescription: Medium Handbag with Smoothstack logo
+        productCategory:
+          categoryName: Handbag
+          categoryId: 10301
+          categoryDescription: Handbag for Women
+    Attribute:
       required:
-      - name
+      - attributeId
+      - attributeName
+      - attributeValue
       type: object
       properties:
-        name:
+        attributeId:
+          type: number
+          format: int64
+          example: 18701
+        attributeName:
           type: string
-          example: ACME Corporation
-        homePage:
+          example: Color
+        attributeValue:
           type: string
-          format: url
-          example: https://www.acme-corp.com
-        phone:
-          type: string
-          example: 408-867-5309
+          example: Red
       example:
-        phone: 408-867-5309
-        name: ACME Corporation
-        homePage: https://www.acme-corp.com
+        attributeId: 18701
+        attributeValue: Red
+        attributeName: Color
+    Category:
+      required:
+      - categoryId
+      - categoryName
+      type: object
+      properties:
+        categoryId:
+          type: number
+          format: int64
+          example: 10301
+        categoryName:
+          type: string
+          example: Handbag
+        categoryDescription:
+          type: string
+          example: Handbag for Women
+      example:
+        categoryName: Handbag
+        categoryId: 10301
+        categoryDescription: Handbag for Women
+    TaxCode:
+      required:
+      - taxCodeAmount
+      - taxCodeId
+      - taxCodeName
+      type: object
+      properties:
+        taxCodeId:
+          type: number
+          format: int64
+          example: 10401
+        taxCodeName:
+          type: string
+          example: VA State
+        taxCodeAmount:
+          type: number
+          format: double
+          example: 4
