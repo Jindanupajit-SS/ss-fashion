@@ -214,3 +214,30 @@ components:
           type: number
           format: double
           example: 4
+    Coupon:
+      required:
+      - couponCode
+      - couponId
+      - couponValue
+      type: object
+      properties:
+        couponId:
+          type: number
+          format: int64
+          example: 10401
+        couponCode:
+          type: string
+          example: 5OFF
+        couponValue:
+          type: number
+          format: double
+          example: 5
+        couponRule:
+          type: string
+          example: price-coupon
+        couponStart:
+          type: string
+          format: date-time
+        couponEnd:
+          type: string
+          format: date-time
